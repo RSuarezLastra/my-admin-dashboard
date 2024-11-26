@@ -17,3 +17,4 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
+4. Ejecutar seed para base de datos http://localhost:3000/api/seed
