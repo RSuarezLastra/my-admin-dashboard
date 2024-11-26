@@ -20,3 +20,14 @@ export async function GET(request: Request) {
 
   return NextResponse.json(todos);
 }
+
+export async function POST(request: Request) {
+
+  const body = await request.json();
+  const { description, complete } = body;
+
+  const todo = await prisma.todo.create({ data: { description, complete } });
+
+  return NextResponse.json(todo)
+
+}
