@@ -23,11 +23,21 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
 
-  const body = await request.json();
-  const { description, complete } = body;
+  try {
+    const body = await request.json();
 
-  const todo = await prisma.todo.create({ data: { description, complete } });
+    const { description, complete } = body;
+    if (!description) return NextResponse.json(
+      { message: 'la descripcion es requerida' },
+      { status: 400 }
+    );
 
-  return NextResponse.json(todo)
+    const todo = await prisma.todo.create({ data: { description, complete } });
+
+    return NextResponse.json(todo)
+
+  } catch (error) {
+    return NextResponse.json(error, { status: 400 })
+  }
 
 }
