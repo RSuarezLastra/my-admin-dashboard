@@ -22,3 +22,42 @@ export const toggleTodo = async (id: string, complete: boolean): Promise<Todo> =
   revalidatePath('/dashboard/server-actions');
   return updatedTodo;
 }
+
+export const addTodo = async (description: string) => {
+  try {
+    if (!description) {
+      throw 'La descripcion es requeridas';
+    }
+
+    const todo = await prisma.todo.create({ data: { description } });
+
+    revalidatePath('/dashboard/server-actions');
+    return todo;
+
+  } catch (error) {
+    return {
+      message: 'Error al crear todo'
+    }
+  }
+
+}
+
+export const deleteTodo = async () => {
+  try {
+
+    const deleteTodo = await prisma.todo.deleteMany({
+      where: { complete: true },
+    });
+    
+    revalidatePath('/dashboard/server-actions');
+    return {
+      ok: true,
+      msg: 'Todos completados eliminados exitosamente',
+      todo: deleteTodo
+    }
+
+  } catch (error) {
+    return `Error al eleiminar todos`;
+  }
+
+}
