@@ -18,10 +18,14 @@ export const NewTodo = () => {
     if(description.trim().length === 0) return;
 
     todoApi.createTodo(description);
-
     router.refresh();
     setdescription('');
+  }
 
+  const deleteCompleted = async () => {
+
+    await todoApi.deleteTodo();
+    router.refresh();
   }
 
   return (
@@ -40,10 +44,10 @@ export const NewTodo = () => {
       <span className='flex flex-1'></span>
 
       <button
-        //TODO: onClick={ () => deleteCompleted() }
+        onClick={ () => deleteCompleted() }
         type='button' className="flex items-center justify-center rounded ml-2 bg-red-400 p-2 text-white hover:bg-red-700 transition-all">
         <IoTrashOutline />
-        Delete
+        <span className="ml-2">Delete</span>
       </button>
 
 
