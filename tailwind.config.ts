@@ -16,4 +16,9 @@ export default {
     },
   },
   plugins: [],
+  safelist: [
+    {
+      pattern: /grid-cols-./,
+    }
+  ],
 } satisfies Config;
