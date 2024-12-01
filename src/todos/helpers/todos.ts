@@ -33,7 +33,6 @@ export const deleteTodo = async (): Promise<Todo> => {
 
   const response = await fetch(`/api/todos`, {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' }
   })
     .then(res => res.json());
 
