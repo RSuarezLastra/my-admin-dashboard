@@ -1,11 +1,18 @@
 // https://tailwindcomponents.com/component/e-commerce-product-card
+'use client'
 
 import Image from "next/image"
 import { IoAddCircleOutline, IoTrashOutline } from "react-icons/io5"
 import { Product } from "../data/products"
 import { Star } from "./Star"
+import { addProductToCart } from "@/shopping-cart/actions/actions"
 
-export const ProductCard = ({ image, name, price, rating }: Product) => {
+export const ProductCard = ({ id, image, name, price, rating }: Product) => {
+
+  const onAddToCart = () => {
+    addProductToCart(id);
+  }
+
   return (
     <div className="bg-white shadow rounded-lg max-w-sm">
 
@@ -41,6 +48,7 @@ export const ProductCard = ({ image, name, price, rating }: Product) => {
 
           <div className="flex">
             <button
+              onClick={onAddToCart}
               className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
               <IoAddCircleOutline size={25} />
             </button>
