@@ -2,6 +2,7 @@
 'use client'
 
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { IoAddCircleOutline, IoTrashOutline } from "react-icons/io5"
 import { Product } from "../data/products"
 import { Star } from "./Star"
@@ -9,8 +10,11 @@ import { addProductToCart } from "@/shopping-cart/actions/actions"
 
 export const ProductCard = ({ id, image, name, price, rating }: Product) => {
 
+  const router = useRouter();
+
   const onAddToCart = () => {
     addProductToCart(id);
+    router.refresh();
   }
 
   return (
