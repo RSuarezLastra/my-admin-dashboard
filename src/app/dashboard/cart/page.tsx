@@ -1,3 +1,4 @@
+import { WidgetItem } from "@/components";
 import { Product, products } from "@/products/data/products";
 import { ItemCard } from "@/shopping-cart";
 import { cookies } from "next/headers";
@@ -28,9 +29,10 @@ const getProductsInCart = (cart: { [id: string]: number }): ProductInCart[] => {
 export default async function CartPage() {
 
   const cookieStore = await cookies();
-  const cart = JSON.parse(cookieStore.get('cart')?.value ?? '{}');
-
+  const cart = JSON.parse(cookieStore.get('cart')?.value ?? '{}') as { [id: string]: number }
   const productsInCart = getProductsInCart(cart);
+
+  const totalToPay = productsInCart.reduce((prev, current) => (current.product.price * current.quantity) + prev, 0)
 
   return (
     <div>
@@ -43,9 +45,18 @@ export default async function CartPage() {
         <div className="flex flex-col w-full sm:w-8/12 gap-2">
           {
             productsInCart.map(({ product, quantity }) => (
-              <ItemCard key={product.id} product={product} quantity={quantity}  />
+              <ItemCard key={product.id} product={product} quantity={quantity} />
             ))
           }
+        </div>
+
+        <div className="flex flex-col w-full sm:w-4/12">
+          <WidgetItem title="Total a Pagar">
+            <div className="mt-2 flex justify-center">
+              <h3 className="text-2xl font-semibold text-gray-700">${(totalToPay).toFixed(2)}</h3>
+            </div>
+            <span className="text-center font-semibold text-gray-500">iva 16%: ${(totalToPay * 0.16).toFixed(2)}</span>
+          </WidgetItem>
         </div>
 
       </div>
