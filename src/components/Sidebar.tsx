@@ -1,8 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
 import { CiLogout } from 'react-icons/ci';
 import { SidebarItem } from './SidebarItem';
 import { IoCalendarOutline, IoCartOutline, IoCheckboxOutline, IoCodeWorking, IoListOutline } from 'react-icons/io5';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 const navLinks = [
   {
@@ -10,29 +12,39 @@ const navLinks = [
     path: '/dashboard',
     icon: <IoCalendarOutline />
   },
-  { 
-    title: 'Rest Todos', 
+  {
+    title: 'Rest Todos',
     path: '/dashboard/rest-todos',
-    icon: <IoCheckboxOutline/>
+    icon: <IoCheckboxOutline />
   },
-  { 
-    title: 'Server Actions', 
+  {
+    title: 'Server Actions',
     path: '/dashboard/server-actions',
-    icon: <IoListOutline/>
+    icon: <IoListOutline />
   },
-  { 
-    title: 'Cookies', 
+  {
+    title: 'Cookies',
     path: '/dashboard/cookies',
-    icon: <IoCodeWorking/>
+    icon: <IoCodeWorking />
   },
-  { 
-    title: 'Products', 
+  {
+    title: 'Products',
     path: '/dashboard/products',
-    icon: <IoCartOutline/>
+    icon: <IoCartOutline />
   },
 ]
 
-export const Sidebar = () => {
+export const Sidebar = async () => {
+
+  const session = await getServerSession(authOptions);
+
+  const userName = session?.user?.name ?? 'No name';
+  const avatar = (session?.user?.image)
+    ? session?.user?.image
+    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7RDEtPGvqNOxsei62fAUnKqBZkR5tyrOilA&s"
+    
+  //TODO const role = session?.user?.role ?? 'User';
+
   return (
     <aside className="ml-[-100%] fixed z-10 top-0 pb-3 px-6 w-full flex flex-col justify-between h-screen border-r bg-white transition duration-300 md:w-4/12 lg:ml-0 lg:w-[25%] xl:w-[20%] 2xl:w-[15%]">
       <div>
@@ -49,13 +61,15 @@ export const Sidebar = () => {
 
         <div className="mt-8 text-center">
           <Image
-            src="https://tailus.io/sources/blocks/stats-cards/preview/images/second_user.webp"
+            src={avatar}
             alt="user image"
             width={100}
             height={50}
             className="w-10 h-10 m-auto rounded-full object-cover lg:w-28 lg:h-28"
           />
-          <h5 className="hidden mt-4 text-xl font-semibold text-gray-600 lg:block">Cynthia J. Watts</h5>
+          <h5 className="hidden mt-4 text-xl font-semibold text-gray-600 lg:block">
+            {userName}
+          </h5>
           <span className="hidden text-gray-400 lg:block">Admin</span>
         </div>
 
