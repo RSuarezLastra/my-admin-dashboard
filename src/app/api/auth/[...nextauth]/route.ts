@@ -1,9 +1,11 @@
 import NextAuth, { NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/app/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { Adapter } from "next-auth/adapters";
+import { signInEmailAndPassword } from "@/auth";
 
 
 export const authOptions: NextAuthOptions = {
@@ -16,6 +18,21 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ''
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "example@email.com" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+        const user = await signInEmailAndPassword(credentials!.email, credentials!.password)
+
+        if (user) {
+          return user
+        }
+        return null
+      }
     })
   ],
   session: {
@@ -24,8 +41,8 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token }) {
       const dbUser = await prisma.user.findUnique({ where: { email: token.email! } });
-      
-      if(dbUser?.isActive === false) {
+
+      if (dbUser?.isActive === false) {
         throw Error('Usuario no esta activo')
       }
 

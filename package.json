@@ -12,6 +12,7 @@
     "@auth/prisma-adapter": "^2.7.4",
     "@prisma/client": "^5.22.0",
     "03-my-admin-dashboard": "file:",
+    "bcryptjs": "^2.4.3",
     "cookies-next": "^5.0.2",
     "next": "15.0.3",
     "next-auth": "^4.24.11",
@@ -21,6 +22,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
