@@ -18,11 +18,11 @@ export const NewTodo = () => {
 
     if(description.trim().length === 0) return;
 
-    await addTodo(description);
+    // await addTodo(description);
     setdescription('');
 
-    // todoApi.createTodo(description);
-    // router.refresh();
+    todoApi.createTodo(description);
+    router.refresh();
   }
 
   // const deleteCompleted = async () => {

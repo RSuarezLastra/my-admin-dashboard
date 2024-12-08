@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/app/lib/prisma';
+import { getUserSessionServer } from '@/auth/actions/auth-actions';
 
 export async function GET(request: Request) {
 
@@ -22,8 +23,14 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const user = await getUserSessionServer();
 
   try {
+
+    if (!user) {
+      return NextResponse.json('No autorizado', { status: 401 });
+    }
+
     const body = await request.json();
 
     const { description, complete } = body;
@@ -32,7 +39,13 @@ export async function POST(request: Request) {
       { status: 400 }
     );
 
-    const todo = await prisma.todo.create({ data: { description, complete } });
+    const todo = await prisma.todo.create({
+      data: {
+        description,
+        complete,
+        userId: user.id
+      }
+    });
 
     return NextResponse.json(todo)
 
@@ -43,11 +56,15 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const user = await getUserSessionServer();
 
   try {
+    if (!user) {
+      return NextResponse.json('No autorizado', { status: 401 });
+    }
 
     const deleteTodo = await prisma.todo.deleteMany({
-      where: { complete: true },
+      where: { complete: true, userId: user.id },
     });
 
     return NextResponse.json({
