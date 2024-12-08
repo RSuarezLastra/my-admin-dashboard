@@ -18,6 +18,31 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ''
     })
   ],
+  session: {
+    strategy: 'jwt'
+  },
+  callbacks: {
+    async jwt({ token }) {
+      const dbUser = await prisma.user.findUnique({ where: { email: token.email! } });
+      
+      if(dbUser?.isActive === false) {
+        throw Error('Usuario no esta activo')
+      }
+
+      token.roles = dbUser?.roles ?? ['no-roles']
+      token.id = dbUser?.id ?? 'no-uuid'
+
+      return token
+    },
+    async session({ session, token, user }) {
+      if (session && session.user) {
+        session.user.roles = token?.roles ?? ['no-roles']
+        session.user.id = token?.id ?? 'no-uuid'
+      }
+
+      return session
+    },
+  }
 }
 
 const handler = NextAuth(authOptions);
