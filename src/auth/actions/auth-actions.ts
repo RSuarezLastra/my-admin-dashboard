@@ -1,6 +1,13 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/app/lib/prisma";
 import bcrypt from 'bcryptjs';
 
+export const getUserSessionServer = async () => {
+  const session = await getServerSession(authOptions);
+
+  return session?.user;
+}
 
 export const signInEmailAndPassword = async (email: string, password: string) => {
 
@@ -13,7 +20,7 @@ export const signInEmailAndPassword = async (email: string, password: string) =>
     return user
   }
   
-  if(!bcrypt.compareSync(dbUser.password, password)){
+  if(!bcrypt.compareSync(password,dbUser.password)){
     return null
   }
 

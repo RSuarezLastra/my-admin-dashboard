@@ -27,3 +27,8 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
+# Nota usuario por defecto:
+__email:__ user@test.com 
+
+__password:__ 123456 
+
